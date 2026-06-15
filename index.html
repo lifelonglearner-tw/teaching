@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>155號教室 - 個人教學網站</title>
+    <style>
+        /* --- 現代現代美學變數定義 --- */
+        :root {
+            --primary-color: #3b82f6;      /* 科技藍，代表理性與知識 */
+            --secondary-color: #10b981;    /* 生機綠，代表成長與學習 */
+            --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            --text-main: #0f172a;          /* 深色主文字 */
+            --text-sub: #64748b;           /* 灰色次文字 */
+            --nav-bg: rgba(255, 255, 255, 0.75);
+            --card-bg: #ffffff;
+            --border-color: rgba(226, 232, 240, 0.8);
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* --- 基礎樣式重設 --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft JhengHei", sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* --- 導覽列樣式 (Header & Navigation) --- */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            background: var(--nav-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+            z-index: 1000;
+            transition: var(--transition-smooth);
+        }
+
+        /* 標題與 SVG 標誌組合 */
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: var(--text-main);
+            cursor: pointer;
+        }
+
+        .logo-svg {
+            width: 32px;
+            height: 32px;
+        }
+
+        .logo-svg path {
+            fill: none;
+            stroke: var(--primary-color);
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-dasharray: 100;
+            stroke-dashoffset: 0;
+            transition: var(--transition-smooth);
+        }
+
+        /* 標誌懸停動畫：線條畫過與顏色轉變效果 */
+        .logo-group:hover .logo-svg path {
+            stroke: var(--secondary-color);
+            animation: drawLine 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes drawLine {
+            0% { stroke-dashoffset: 0; }
+            100% { stroke-dashoffset: 40; }
+        }
+
+        .logo-title {
+            font-size: 1.35rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            background: linear-gradient(to right, var(--text-main), var(--primary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* 桌面版選單 */
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-item a {
+            text-decoration: none;
+            color: var(--text-sub);
+            font-size: 1rem;
+            font-weight: 500;
+            position: relative;
+            padding: 0.5rem 0;
+            transition: var(--transition-smooth);
+        }
+
+        .nav-item a:hover {
+            color: var(--primary-color);
+        }
+
+        /* 現代感下底線滑過效果 */
+        .nav-item a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-color);
+            transition: var(--transition-smooth);
+        }
+
+        .nav-item a:hover::after {
+            width: 100%;
+        }
+
+        /* 漢堡選單按鈕 (行動端專用) */
+        .burger-menu {
+            display: none;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0.5rem;
+            z-index: 1100;
+        }
+
+        .burger-bar {
+            display: block;
+            width: 22px;
+            height: 2px;
+            margin: 5px 0;
+            background-color: var(--text-main);
+            transition: var(--transition-smooth);
+        }
+
+        /* --- 主內容區塊 (Main Content) --- */
+        .main-content {
+            margin-top: 70px; /* 避開固定導覽列的高 */
+            flex: 1;
+            padding: 3rem 2rem;
+            max-width: 1200px;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* 歡迎橫幅 (Hero Banner) */
+        .hero-section {
+            text-align: center;
+            margin-bottom: 4rem;
+            padding: 2rem 0;
+        }
+
+        .hero-section h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-main);
+        }
+
+        .hero-section p {
+            font-size: 1.1rem;
+            color: var(--text-sub);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* 預留的未來教學內容區塊 (Placeholder Dashboard) */
+        .content-placeholder-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .placeholder-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            min-height: 240px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.01);
+            transition: var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .placeholder-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 20px -8px rgba(59, 130, 246, 0.15);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        /* 骨架屏線條，暗示未來內容放置處 */
+        .skeleton-title {
+            width: 40%;
+            height: 20px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+        .skeleton-line {
+            width: 100%;
+            height: 12px;
+            background: #f1f5f9;
+            border-radius: 4px;
+            margin-bottom: 0.6rem;
+        }
+        .skeleton-line.short {
+            width: 75%;
+        }
+
+        .placeholder-hint {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            font-style: italic;
+            margin-top: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* 頁腳 (Footer) */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.9rem;
+            color: var(--text-sub);
+            border-top: 1px solid var(--border-color);
+            background: #ffffff;
+        }
+
+        /* --- 響應式網頁設計 (RWD) 媒體查詢 --- */
+        @media (max-width: 768px) {
+            .burger-menu {
+                display: block; /* 手機板顯示漢堡鈕 */
+            }
+
+            /* 手機板導覽選單改為全螢幕/側邊滑出效果 */
+            .nav-menu {
+                position: fixed;
+                top: 70px;
+                right: -100%;
+                width: 100%;
+                height: calc(100vh - 70px);
+                background: #ffffff;
+                flex-direction: column;
+                align-items: center;
+                padding-top: 3rem;
+                gap: 2.5rem;
+                transition: var(--transition-smooth);
+                box-shadow: -4px 10px 15px -3px rgba(0, 0, 0, 0.05);
+            }
+
+            .nav-menu.active {
+                right: 0;
+            }
+
+            .hero-section h2 {
+                font-size: 2rem;
+            }
+
+            /* 漢堡鈕轉換為 X 的動畫效果 */
+            .burger-menu.active .burger-bar:nth-child(1) {
+                transform: translateY(7px) rotate(45deg);
+            }
+            .burger-menu.active .burger-bar:nth-child(2) {
+                opacity: 0;
+            }
+            .burger-menu.active .burger-bar:nth-child(3) {
+                transform: translateY(-7px) rotate(-45deg);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <a href="#" class="logo-group">
+            <svg class="logo-svg" viewBox="0 0 24 24">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            </svg>
+            <h1 class="logo-title">155號教室</h1>
+        </a>
+
+        <nav>
+            <ul class="nav-menu" id="navMenu">
+                <li class="nav-item"><a href="#about">關於我</a></li>
+                <li class="nav-item"><a href="#projects">專案學習</a></li>
+                <li class="nav-item"><a href="#notes">閱讀筆記</a></li>
+                <li class="nav-item"><a href="#contact">聯絡方式</a></li>
+            </ul>
+        </nav>
+
+        <button class="burger-menu" id="burgerMenu" aria-label="切換選單">
+            <span class="burger-bar"></span>
+            <span class="burger-bar"></span>
+            <span class="burger-bar"></span>
+        </button>
+    </header>
+
+    <main class="main-content">
+        <section class="hero-section">
+            <h2>歡迎來到 155 號教室</h2>
+            <p>這裡是一個專注於知識共享與跨領域學習的數位空間。下方區塊將逐步解鎖更多精彩的互動教材、程式專案與深度筆記。</p>
+        </section>
+
+        <section class="content-placeholder-grid">
+            
+            <div class="placeholder-card">
+                <div>
+                    <div class="skeleton-title"></div>
+                    <div class="skeleton-line"></div>
+                    <div class="skeleton-line"></div>
+                    <div class="skeleton-line short"></div>
+                </div>
+                <div class="placeholder-hint">
+                    🌐 [ 區塊預留：最新專案/教材內容將在此呈現 ]
+                </div>
+            </div>
+
+            <div class="placeholder-card">
+                <div>
+                    <div class="skeleton-title" style="width: 55%; background:#cbd5e1;"></div>
+                    <div class="skeleton-line"></div>
+                    <div class="skeleton-line"></div>
+                    <div class="skeleton-line short"></div>
+                </div>
+                <div class="placeholder-hint">
+                    📚 [ 區塊預留：近期閱讀筆記與洞察 ]
+                </div>
+            </div>
+
+            <div class="placeholder-card">
+                <div>
+                    <div class="skeleton-title" style="width: 35%;"></div>
+                    <div class="skeleton-line"></div>
+                    <div class="skeleton-line"></div>
+                    <div class="skeleton-line short"></div>
+                </div>
+                <div class="placeholder-hint">
+                    💡 [ 區塊預留：精選互動學習實驗室 ]
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2026 155號教室. All rights reserved. 串聯知識與科技的數位講堂.</p>
+    </footer>
+
+    <script>
+        const burgerMenu = document.getElementById('burgerMenu');
+        const navMenu = document.getElementById('navMenu');
+
+        // 切換手機版側邊選單開關
+        burgerMenu.addEventListener('click', () => {
+            burgerMenu.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+
+        // 點擊選單項目後，自動關閉手機選單（優化 UX 體驗）
+        document.querySelectorAll('.nav-item a').forEach(link => {
+            link.addEventListener('click', () => {
+                burgerMenu.classList.remove('active');
+                navMenu.classList.remove('active');
+            });
+        });
+
+        // 滾動網頁時，為導覽列加上更紮實的陰影（增加視覺層次）
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('.header');
+            if (window.scrollY > 20) {
+                header.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.05)';
+                header.style.background = 'rgba(255, 255, 255, 0.9)';
+            } else {
+                header.style.boxShadow = 'none';
+                header.style.background = 'var(--nav-bg)';
+            }
+        });
+    </script>
+</body>
+</html>
