@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>英文字首 (a- = of/on/intensive/ad-) 互動單字卡</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', 'Noto Sans TC', sans-serif;
+    }
+    /* Card Flip animations */
+    .perspective-1000 {
+      perspective: 1000px;
+    }
+    .preserve-3d {
+      transform-style: preserve-3d;
+    }
+    .backface-hidden {
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .rotate-y-180 {
+      transform: rotateY(180deg);
+    }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col">
+
+  <!-- APP CONTAINER -->
+  <div class="max-w-md w-full mx-auto flex-1 flex flex-col bg-white shadow-2xl min-h-screen overflow-hidden">
+    
+    <!-- HEADER -->
+    <header class="bg-gradient-to-r from-emerald-600 to-teal-700 text-white p-4 shadow-md sticky top-0 z-50">
+      <div class="flex justify-between items-center">
+        <div>
+          <h1 class="font-bold text-lg">字首單字卡 (Prefix)</h1>
+          <p class="text-xs text-emerald-100">第1篇：a- 的四種核心變化</p>
+        </div>
+        <div class="flex space-x-2">
+          <!-- Voice Settings -->
+          <button id="voice-settings-btn" class="p-2 hover:bg-emerald-700/50 rounded-full transition-colors relative" title="語音設定">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="flex mt-4 bg-emerald-900/30 rounded-lg p-1 text-sm">
+        <button id="tab-flashcards" class="flex-1 py-1.5 rounded-md font-medium text-center transition-all bg-white text-emerald-900 shadow-sm" onclick="switchTab('flashcards')">
+          單字卡
+        </button>
+        <button id="tab-list" class="flex-1 py-1.5 rounded-md font-medium text-center transition-all text-emerald-100 hover:text-white" onclick="switchTab('list')">
+          單字清單
+        </button>
+        <button id="tab-quiz" class="flex-1 py-1.5 rounded-md font-medium text-center transition-all text-emerald-100 hover:text-white" onclick="switchTab('quiz')">
+          測驗模式
+        </button>
+      </div>
+    </header>
+
+    <!-- VOICE CONFIG MODAL -->
+    <div id="voice-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+      <div class="bg-white rounded-2xl max-w-xs w-full p-5 shadow-2xl">
+        <h3 class="font-bold text-slate-800 text-lg mb-3">發音設定</h3>
+        <label class="block text-sm font-medium text-slate-600 mb-1">語速 (Speed)</label>
+        <input type="range" id="voice-rate" min="0.5" max="1.5" step="0.1" value="0.9" class="w-full mb-4 accent-emerald-600">
+        
+        <label class="block text-sm font-medium text-slate-600 mb-1">語調 (Pitch)</label>
+        <input type="range" id="voice-pitch" min="0.5" max="1.5" step="0.1" value="1.0" class="w-full mb-4 accent-emerald-600">
+
+        <button onclick="toggleVoiceModal()" class="w-full bg-emerald-600 text-white font-medium py-2 rounded-lg hover:bg-emerald-700 transition">
+          儲存並關閉
+        </button>
+      </div>
+    </div>
+
+    <!-- MAIN APP BODY -->
+    <main class="flex-1 overflow-y-auto p-4 flex flex-col">
+
+      <!-- ================= TAB 1: FLASHCARDS ================= -->
+      <section id="view-flashcards" class="flex-1 flex flex-col justify-between space-y-4">
+        
+        <!-- Progress Bar -->
+        <div class="flex items-center justify-between text-xs text-slate-500 px-1">
+          <span id="card-progress-text">進度：1 / 36</span>
+          <span class="flex items-center space-x-1">
+            <input type="checkbox" id="auto-speak" class="rounded text-emerald-600 focus:ring-emerald-500" checked>
+            <label for="auto-speak" class="cursor-pointer select-none">自動發音</label>
+          </span>
+        </div>
+
+        <!-- Flip Card container -->
+        <div class="flex-1 flex items-center justify-center py-2">
+          <div id="flashcard" class="perspective-1000 w-full max-w-[340px] h-[390px] cursor-pointer group" onclick="flipCard()">
+            <div id="card-inner" class="preserve-3d duration-500 relative w-full h-full transition-transform">
+              
+              <!-- CARD FRONT -->
+              <div class="backface-hidden absolute inset-0 bg-white border border-slate-200 rounded-2xl shadow-md p-6 flex flex-col justify-between items-center text-center">
+                <span class="text-[11px] bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-full font-bold uppercase tracking-wider self-start" id="card-front-tag">a- = of</span>
+                
+                <div class="my-auto space-y-3">
+                  <h2 class="text-4xl font-extrabold text-slate-800 tracking-tight" id="card-word">adown</h2>
+                  <p class="text-sm text-slate-400 italic font-mono" id="card-ipa">/əˈdaʊn/</p>
+                  <p class="text-xs text-emerald-500 font-semibold" id="card-pos">[ adv. / prep. ]</p>
+                </div>
+
+                <div class="w-full flex justify-between items-center text-xs text-slate-400 border-t border-slate-100 pt-3">
+                  <span class="flex items-center text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-md" onclick="speakCurrentWord(event)">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.69-3.69a1 1 0 011.107-.234zM11 9.414V5.586L13.586 8 11 10.586zm4.5 4.086L13.086 11l2.414-2.414L18 11l-2.5 2.5z" clip-rule="evenodd" />
+                    </svg>發音
+                  </span>
+                  <span>點擊翻面 ↩</span>
+                </div>
+              </div>
+
+              <!-- CARD BACK -->
+              <div class="backface-hidden rotate-y-180 absolute inset-0 bg-emerald-50/40 border border-emerald-100 rounded-2xl shadow-md p-6 flex flex-col justify-between overflow-y-auto">
+                <div class="flex justify-between items-center text-xs">
+                  <span class="bg-emerald-600 text-white font-mono px-2.5 py-0.5 rounded" id="card-back-formula">a- (of) + down</span>
+                  <span class="text-slate-400 font-medium">說明</span>
+                </div>
+
+                <div class="my-auto space-y-4 py-2">
+                  <div class="text-center">
+                    <p class="text-xs text-emerald-600 font-semibold tracking-wide uppercase">字義解析</p>
+                    <h3 class="text-2xl font-bold text-slate-800 mt-1" id="card-translation">朝下；向下</h3>
+                  </div>
+
+                  <!-- Sentence Example -->
+                  <div class="bg-white p-3 rounded-xl border border-slate-100 space-y-2 relative shadow-sm">
+                    <p class="text-[10px] text-emerald-600 font-bold uppercase tracking-wider">學習例句</p>
+                    <p class="text-sm font-semibold text-slate-800 leading-relaxed pr-6" id="card-example">The water flowed adown the mountainside.</p>
+                    <p class="text-xs text-slate-500" id="card-example-cn">水往山坡下流去。</p>
+                    
+                    <button class="absolute top-2 right-2 p-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 rounded-lg transition" onclick="speakCurrentSentence(event)">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.69-3.69a1 1 0 011.107-.234zm3.324 2.217a1 1 0 010 1.414 2 2 0 000 2.828 1 1 0 11-1.414 1.414 4 4 0 010-5.656 1 1 0 011.414 0z" clip-rule="evenodd" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="text-center text-xs text-emerald-400 border-t border-emerald-100 pt-3">
+                  點擊卡片翻回正面
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="space-y-4">
+          <div class="flex justify-between items-center px-4">
+            <button onclick="prevCard()" class="p-3 bg-slate-100 hover:bg-slate-200 text-slate-700 active:bg-slate-300 rounded-full transition shadow">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+
+            <button onclick="speakCurrentWordDirect()" class="px-5 py-2.5 bg-emerald-100 text-emerald-700 font-semibold rounded-full hover:bg-emerald-200 active:scale-95 transition flex items-center space-x-2 shadow-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM9 13a1 1 0 11-2 0 1 1 0 012 0zm1-3a1 1 0 00-1-1H7a1 1 0 100 2h1v2a1 1 0 002 0v-3z" clip-rule="evenodd" />
+              </svg>
+              <span>發音本字</span>
+            </button>
+
+            <button onclick="nextCard()" class="p-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-full transition shadow">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+
+          <div class="flex justify-center">
+            <button id="master-btn" onclick="toggleMasterCurrent()" class="px-4 py-2 border rounded-full text-xs font-semibold flex items-center space-x-1.5 transition">
+              <span id="master-icon">⚪</span>
+              <span id="master-text">標記為已學會</span>
+            </button>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ================= TAB 2: WORD LIST ================= -->
+      <section id="view-list" class="hidden flex-1 flex flex-col space-y-3">
+        
+        <!-- Search -->
+        <div class="relative">
+          <input type="text" id="search-input" oninput="filterList()" placeholder="搜尋單字、中文或分類..." class="w-full px-4 py-2.5 pl-10 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-slate-50">
+          <span class="absolute left-3.5 top-3.5 text-slate-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </span>
+        </div>
+
+        <!-- Filter Buttons -->
+        <div class="flex space-x-1.5 overflow-x-auto pb-1 text-[11px] font-medium scrollbar-none">
+          <button onclick="setListFilter('all')" id="list-filter-all" class="flex-shrink-0 px-3 py-1.5 bg-emerald-600 text-white rounded-full">全部 (36)</button>
+          <button onclick="setListFilter('of')" id="list-filter-of" class="flex-shrink-0 px-3 py-1.5 bg-slate-100 text-slate-600 rounded-full">a- = of</button>
+          <button onclick="setListFilter('on')" id="list-filter-on" class="flex-shrink-0 px-3 py-1.5 bg-slate-100 text-slate-600 rounded-full">a- = on</button>
+          <button onclick="setListFilter('int')" id="list-filter-int" class="flex-shrink-0 px-3 py-1.5 bg-slate-100 text-slate-600 rounded-full">加強</button>
+          <button onclick="setListFilter('ad')" id="list-filter-ad" class="flex-shrink-0 px-3 py-1.5 bg-slate-100 text-slate-600 rounded-full">a- = ad-</button>
+        </div>
+
+        <!-- Words List Render -->
+        <div class="flex-1 overflow-y-auto space-y-2 max-h-[460px]" id="words-container-list">
+          <!-- Dynamically populated -->
+        </div>
+
+      </section>
+
+      <!-- ================= TAB 3: QUIZ ================= -->
+      <section id="view-quiz" class="hidden flex-1 flex flex-col space-y-4 justify-between">
+        
+        <div class="bg-emerald-50 border border-emerald-100 p-3 rounded-lg flex justify-between items-center text-xs">
+          <div>
+            <span class="text-emerald-700 font-bold">字首概念自我檢測</span>
+            <p class="text-slate-500 mt-0.5">每次隨機挑選 10 題</p>
+          </div>
+          <div class="text-right">
+            <span class="font-bold text-slate-700" id="quiz-progress-text">題數：1 / 10</span>
+            <p class="text-emerald-600 font-semibold" id="quiz-score-text">得分：0%</p>
+          </div>
+        </div>
+
+        <!-- Question Area -->
+        <div class="flex-1 flex flex-col justify-center py-4 space-y-6">
+          <div class="text-center space-y-2">
+            <span class="text-[11px] text-emerald-600 font-bold tracking-wider uppercase" id="quiz-question-type">中譯選擇題</span>
+            <h2 class="text-4xl font-extrabold text-slate-800" id="quiz-question-word">abide</h2>
+            <p class="text-xs text-slate-400 font-mono" id="quiz-question-ipa">/əˈbaɪd/</p>
+            <p class="text-xs text-slate-500 bg-emerald-50 px-2 py-1 rounded inline-block" id="quiz-question-hint">字首結構：a- (intensive) + bide</p>
+          </div>
+
+          <!-- Options -->
+          <div class="space-y-2" id="quiz-options-container">
+            <!-- Dynamic choice buttons -->
+          </div>
+        </div>
+
+        <!-- Action Button -->
+        <button id="quiz-action-btn" onclick="nextQuizQuestion()" class="hidden w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-lg transition active:scale-95 text-center">
+          下一題 ➜
+        </button>
+
+      </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-50 border-t border-slate-200 p-3 text-center text-[10px] text-slate-400 flex justify-between items-center">
+      <span>已熟練：<strong class="text-emerald-600 font-bold" id="footer-mastered-count">0</strong> / 36</span>
+      <span>第一篇：字首 (Prefix) 113 個核心字首系列</span>
+    </footer>
+
+  </div>
+
+  <!-- JAVASCRIPT APP STATE -->
+  <script>
+    // DATABASE OF ALL 36 WORDS FROM THE NEW PREFIX PAGES
+    const prefixDatabase = [
+      // 1. a- = of 系列
+      {
+        word: "adown",
+        ipa: "/əˈdaʊn/",
+        pos: "adv. / prep.",
+        translation: "朝下；向下",
+        tag: "of",
+        formula: "a- (of) + down",
+        example: "The heavy tears rolled adown her cheeks.",
+        exampleCn: "大顆的淚珠順著她的臉頰流了下來。"
+      },
+      {
+        word: "afresh",
+        ipa: "/əˈfreʃ/",
+        pos: "adv.",
+        translation: "重新；再",
+        tag: "of",
+        formula: "a- (of) + fresh",
+        example: "They closed the file and started looking at the problem afresh.",
+        exampleCn: "他們合上檔案，重新著手研究這個問題。"
+      },
+      {
+        word: "akin",
+        ipa: "/əˈkɪn/",
+        pos: "adj.",
+        translation: "同族的；類似的",
+        tag: "of",
+        formula: "a- (of) + kin (親屬)",
+        example: "The two languages are closely akin to each other.",
+        exampleCn: "這兩種語言彼此高度相似。"
+      },
+      {
+        word: "anew",
+        ipa: "/əˈnjuː/",
+        pos: "adv.",
+        translation: "再；重新",
+        tag: "of",
+        formula: "a- (of) + new",
+        example: "Her body healed, and she began her life anew.",
+        exampleCn: "她的身體康復了，並重新開始了她的新生活。"
+      },
+
+      // 2. a- = on 系列
+      {
+        word: "aback",
+        ipa: "/əˈbæk/",
+        pos: "adv.",
+        translation: "向後；吃驚地",
+        tag: "on",
+        formula: "a- (on) + back",
+        example: "I was taken aback by her sudden change of mood.",
+        exampleCn: "她突然的情緒轉變讓我大吃一驚。"
+      },
+      {
+        word: "abed",
+        ipa: "/əˈbed/",
+        pos: "adv.",
+        translation: "在床上",
+        tag: "on",
+        formula: "a- (on) + bed",
+        example: "He remained abed late into the Sunday morning.",
+        exampleCn: "他在週日早晨一直躺在床上睡懶覺。"
+      },
+      {
+        word: "ablaze",
+        ipa: "/əˈbleɪz/",
+        pos: "adv. / adj.",
+        translation: "著火；發光的",
+        tag: "on",
+        formula: "a- (on) + blaze (火焰)",
+        example: "Within minutes the whole building was ablaze.",
+        exampleCn: "幾分鐘之內，整棟建築就陷入了烈火之中。"
+      },
+      {
+        word: "aboard",
+        ipa: "/əˈbɔːd/",
+        pos: "adv. / prep.",
+        translation: "在船上、飛機上或火車上",
+        tag: "on",
+        formula: "a- (on) + board (甲板)",
+        example: "Welcome aboard! Flight 302 is ready for departure.",
+        exampleCn: "歡迎登機！302號航班已準備好起飛。"
+      },
+      {
+        word: "abroad",
+        ipa: "/əˈbrɔːd/",
+        pos: "adv.",
+        translation: "在國外；遠；廣泛",
+        tag: "on",
+        formula: "a- (on) + broad (寬廣)",
+        example: "She decided to study abroad to experience different cultures.",
+        exampleCn: "她決定出國留學以體驗不同的文化。"
+      },
+      {
+        word: "afar",
+        ipa: "/əˈfɑː/",
+        pos: "adv.",
+        translation: "遙遠地",
+        tag: "on",
+        formula: "a- (on) + far",
+        example: "The sailors saw the light of the lighthouse from afar.",
+        exampleCn: "水手們從遠處看到了燈塔的光芒。"
+      },
+      {
+        word: "afloat",
+        ipa: "/əˈfləʊt/",
+        pos: "adj. / adv.",
+        translation: "漂浮的；流傳廣的；免於債務的",
+        tag: "on",
+        formula: "a- (on) + float",
+        example: "We need a loan of $5000 just to keep the business afloat.",
+        exampleCn: "我們需要五千美元的貸款才能讓這家企業維持營運(免於倒閉)。"
+      },
+      {
+        word: "afoot",
+        ipa: "/əˈfʊt/",
+        pos: "adv. / adj.",
+        translation: "徒步地；在進行中的",
+        tag: "on",
+        formula: "a- (on) + foot",
+        example: "There are plans afoot to expand the local airport.",
+        exampleCn: "擴建當地機場的計畫正在進行中。"
+      },
+      {
+        word: "aground",
+        ipa: "/əˈgraʊnd/",
+        pos: "adv. / adj.",
+        translation: "擱淺的；觸礁的",
+        tag: "on",
+        formula: "a- (on) + ground",
+        example: "The massive cargo ship ran aground in the shallow canal.",
+        exampleCn: "那艘巨大的貨輪在淺水運河中擱淺了。"
+      },
+      {
+        word: "ahead",
+        ipa: "/əˈhed/",
+        pos: "adv. / adj.",
+        translation: "在前方；在前；領先",
+        tag: "on",
+        formula: "a- (on) + head",
+        example: "The road ahead is clear, we can speed up now.",
+        exampleCn: "前方的道路很通暢，我們現在可以加速了。"
+      },
+      {
+        word: "alive",
+        ipa: "/əˈlaɪv/",
+        pos: "adj.",
+        translation: "活的；有生氣的；繼續活動的",
+        tag: "on",
+        formula: "a- (on) + live",
+        example: "The doctors did everything they could to keep him alive.",
+        exampleCn: "醫生們盡了一切努力來維持他的生命。"
+      },
+      {
+        word: "aloof",
+        ipa: "/əˈluːf/",
+        pos: "adv. / adj.",
+        translation: "遠離；躲開；冷漠的",
+        tag: "on",
+        formula: "a- (on) + loof (迎風偏航)",
+        example: "He held himself aloof from all community activities.",
+        exampleCn: "他對所有的社區活動都保持距離、不參與。"
+      },
+      {
+        word: "asleep",
+        ipa: "/əˈsliːp/",
+        pos: "adv. / adj.",
+        translation: "睡著的",
+        tag: "on",
+        formula: "a- (on) + sleep",
+        example: "Quiet please, the baby is fast asleep.",
+        exampleCn: "請安靜，小寶寶正安穩地睡著。"
+      },
+      {
+        word: "away",
+        ipa: "/əˈweɪ/",
+        pos: "adv.",
+        translation: "在遠方；離去；不在",
+        tag: "on",
+        formula: "a- (on) + way",
+        example: "Please put your toys away before dinnertime.",
+        exampleCn: "請在晚餐時間前把你的玩具收好(移開)。"
+      },
+
+      // 3. a- = intensive 加強語氣 系列
+      {
+        word: "abide",
+        ipa: "/əˈbaɪd/",
+        pos: "v.",
+        translation: "居留；遵守；等待",
+        tag: "int",
+        formula: "a- (intensive) + bide (停留)",
+        example: "You must abide by the rules of the library.",
+        exampleCn: "你必須遵守圖書館的規則。"
+      },
+      {
+        word: "alight",
+        ipa: "/əˈlaɪt/",
+        pos: "v. / adj.",
+        translation: "下車；落下來；亮著的",
+        tag: "int",
+        formula: "a- (intensive) + light (著陸/明亮)",
+        example: "A beautiful butterfly alighted on the flower.",
+        exampleCn: "一隻漂亮的蝴蝶落在了花朵上。"
+      },
+      {
+        word: "alike",
+        ipa: "/əˈlaɪk/",
+        pos: "adj. / adv.",
+        translation: "相似的；同樣地",
+        tag: "int",
+        formula: "a- (intensive) + like",
+        example: "My brother and I look very alike but have different tastes.",
+        exampleCn: "我和我弟弟長得很像，但興趣品味不同。"
+      },
+      {
+        word: "aloud",
+        ipa: "/əˈlaʊd/",
+        pos: "adv.",
+        translation: "大聲地",
+        tag: "int",
+        formula: "a- (intensive) + loud",
+        example: "The teacher asked the student to read the poem aloud.",
+        exampleCn: "老師要求那位學生大聲朗讀這首詩。"
+      },
+      {
+        word: "amaze",
+        ipa: "/əˈmeɪz/",
+        pos: "v.",
+        translation: "使吃驚；使驚愕",
+        tag: "int",
+        formula: "a- (intensive) + maze (迷宮/混亂)",
+        example: "The magician's final trick managed to amaze the entire audience.",
+        exampleCn: "魔術師的最後一個魔術成功地讓全場觀眾大吃一驚。"
+      },
+      {
+        word: "arise",
+        ipa: "/əˈraɪz/",
+        pos: "v.",
+        translation: "起來；上升；產生",
+        tag: "int",
+        formula: "a- (intensive) + rise",
+        example: "Should any problems arise, feel free to contact me.",
+        exampleCn: "如果產生任何問題，請隨時與我聯繫。"
+      },
+      {
+        word: "arouse",
+        ipa: "/əˈraʊz/",
+        pos: "v.",
+        translation: "喚起；激起",
+        tag: "int",
+        formula: "a- (intensive) + rouse (喚醒)",
+        example: "His suspicious behavior began to arouse the neighbor's curiosity.",
+        exampleCn: "他那可疑的舉止開始激起鄰居的好奇心。"
+      },
+      {
+        word: "ashamed",
+        ipa: "/əˈʃeɪmd/",
+        pos: "adj.",
+        translation: "羞恥的；慚愧的",
+        tag: "int",
+        formula: "a- (intensive) + shame",
+        example: "She felt ashamed of having made such a silly mistake.",
+        exampleCn: "她為自己犯了這麼愚蠢的錯誤感到無比羞愧。"
+      },
+      {
+        word: "athirst",
+        ipa: "/əˈθɜːst/",
+        pos: "adj.",
+        translation: "渴望的；口渴的",
+        tag: "int",
+        formula: "a- (intensive) + thirst",
+        example: "The young artist was athirst for fame and success.",
+        exampleCn: "這位年輕的藝術家極其渴望名聲與成功。"
+      },
+      {
+        word: "await",
+        ipa: "/əˈweɪt/",
+        pos: "v.",
+        translation: "等候；期待",
+        tag: "int",
+        formula: "a- (intensive) + wait",
+        example: "A warm welcome awaits you upon your return.",
+        exampleCn: "等你回來後，一場溫馨的歡迎會正期待著你。"
+      },
+      {
+        word: "awake",
+        ipa: "/əˈweɪk/",
+        pos: "v. / adj.",
+        translation: "吵醒；喚醒；醒著的",
+        tag: "int",
+        formula: "a- (intensive) + wake",
+        example: "The loud thunder woke me up and kept me awake all night.",
+        exampleCn: "巨大的雷聲把我吵醒，並讓我整晚保持清醒。"
+      },
+
+      // 4. a- = ad- = to, at, for 系列
+      {
+        word: "abandon",
+        ipa: "/əˈbændən/",
+        pos: "v.",
+        translation: "放棄；拋棄；沉溺於",
+        tag: "ad",
+        formula: "a- (ad) + bandon (支配/權力)",
+        example: "Do not abandon your dreams because of temporary setbacks.",
+        exampleCn: "不要因為一時的挫折就放棄你的夢想。"
+      },
+      {
+        word: "abase",
+        ipa: "/əˈbeɪs/",
+        pos: "v.",
+        translation: "貶抑；降低(職位、等級)",
+        tag: "ad",
+        formula: "a- (ad) + base (低下)",
+        example: "He refused to abase himself by begging for mercy.",
+        exampleCn: "他拒絕透過乞求寬恕來貶低自己的尊嚴。"
+      },
+      {
+        word: "abate",
+        ipa: "/əˈbeɪt/",
+        pos: "v.",
+        translation: "減少；減輕；降低(打擊強度)",
+        tag: "ad",
+        formula: "a- (ad) + bate (打擊/beat)",
+        example: "The raging storm finally began to abate after midnight.",
+        exampleCn: "狂暴的風雨終於在午夜過後開始減弱了。"
+      },
+      {
+        word: "abridge",
+        ipa: "/əˈbrɪdʒ/",
+        pos: "v.",
+        translation: "縮短；刪節(文字)",
+        tag: "ad",
+        formula: "a- (ad) + bridge (縮短/short)",
+        example: "The publisher decided to abridge the long novel for students.",
+        exampleCn: "出版商決定將這本長篇小說進行刪節，方便學生閱讀。"
+      },
+      {
+        word: "achieve",
+        ipa: "/əˈtʃiːv/",
+        pos: "v.",
+        translation: "完成；實現",
+        tag: "ad",
+        formula: "a- (ad) + chief (頭部/頂點)",
+        example: "You can achieve anything if you work hard enough.",
+        exampleCn: "只要你足夠努力，你可以實現任何事情。"
+      },
+      {
+        word: "amass",
+        ipa: "/əˈmæs/",
+        pos: "v.",
+        translation: "積聚；積累",
+        tag: "ad",
+        formula: "a- (ad) + mass (堆/大塊)",
+        example: "Over the years, he managed to amass a great fortune.",
+        exampleCn: "這些年來，他設法積累了一筆巨大的財富。"
+      },
+      {
+        word: "ameliorate",
+        ipa: "/əˈmiːliəreɪt/",
+        pos: "v.",
+        translation: "改善；修正",
+        tag: "ad",
+        formula: "a- (ad) + melior (更好的)",
+        example: "Steps were taken to ameliorate the poor working conditions.",
+        exampleCn: "政府已採取措施來改善惡劣的工作環境。"
+      },
+      {
+        word: "amenable",
+        ipa: "/əˈmiːnəbəl/",
+        pos: "adj.",
+        translation: "順從的；有服從義務的",
+        tag: "ad",
+        formula: "a- (ad) + men (引導/lead) + able",
+        example: "The young children are generally amenable to parental guidance.",
+        exampleCn: "小孩子通常都很順從父母的引導。"
+      },
+      {
+        word: "amount",
+        ipa: "/əˈmaʊnt/",
+        pos: "v. / n.",
+        translation: "總計；共達",
+        tag: "ad",
+        formula: "a- (ad) + mount (山/上升)",
+        example: "The repair bills amount to over five hundred dollars.",
+        exampleCn: "維修費用的總計金額超過了五百美元。"
+      }
+    ];
+
+    // APP STATE
+    let currentIndex = 0;
+    let isFlipped = false;
+    let currentTab = 'flashcards';
+    let masteredList = JSON.parse(localStorage.getItem('prefixMasteredWords') || '[]');
+    let currentListFilter = 'all';
+
+    // QUIZ STATE
+    let quizQuestions = [];
+    let currentQuizIndex = 0;
+    let quizScore = 0;
+    let selectedQuizAnswer = null;
+
+    // AUDIO ENGINE
+    let synth = window.speechSynthesis;
+    let voiceRateInput = document.getElementById('voice-rate');
+    let voicePitchInput = document.getElementById('voice-pitch');
+
+    window.onload = function() {
+      setupSwipeGestures();
+      renderFlashcard();
+      renderWordList();
+      updateFooterStats();
+    };
+
+    // SWIPE CONTROLS FOR MOBILE PHONES
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    function setupSwipeGestures() {
+      const cardContainer = document.getElementById('flashcard');
+      cardContainer.addEventListener('touchstart', e => {
+        touchStartX = e.changedTouches[0].screenX;
+      }, { passive: true });
+
+      cardContainer.addEventListener('touchend', e => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+      }, { passive: true });
+    }
+
+    function handleSwipe() {
+      const deltaX = touchEndX - touchStartX;
+      const swipeThreshold = 50; 
+      if (Math.abs(deltaX) > swipeThreshold) {
+        if (deltaX < 0) nextCard();
+        else prevCard();
+      }
+    }
+
+    // TAB TOGGLE
+    function switchTab(tabName) {
+      currentTab = tabName;
+      
+      document.getElementById('tab-flashcards').className = `flex-1 py-1.5 rounded-md font-medium text-center transition-all ${tabName === 'flashcards' ? 'bg-white text-emerald-950 shadow-sm' : 'text-emerald-100 hover:text-white'}`;
+      document.getElementById('tab-list').className = `flex-1 py-1.5 rounded-md font-medium text-center transition-all ${tabName === 'list' ? 'bg-white text-emerald-950 shadow-sm' : 'text-emerald-100 hover:text-white'}`;
+      document.getElementById('tab-quiz').className = `flex-1 py-1.5 rounded-md font-medium text-center transition-all ${tabName === 'quiz' ? 'bg-white text-emerald-950 shadow-sm' : 'text-emerald-100 hover:text-white'}`;
+
+      document.getElementById('view-flashcards').classList.toggle('hidden', tabName !== 'flashcards');
+      document.getElementById('view-list').classList.toggle('hidden', tabName !== 'list');
+      document.getElementById('view-quiz').classList.toggle('hidden', tabName !== 'quiz');
+
+      if (tabName === 'flashcards') {
+        renderFlashcard();
+      } else if (tabName === 'list') {
+        renderWordList();
+      } else if (tabName === 'quiz') {
+        startNewQuiz();
+      }
+    }
+
+    // RENDERING CORE FLASHCARD
+    function renderFlashcard() {
+      const wordObj = prefixDatabase[currentIndex];
+      isFlipped = false;
+      document.getElementById('card-inner').classList.remove('rotate-y-180');
+
+      // Front
+      let friendlyTag = "a- = of (表示性質)";
+      if (wordObj.tag === "on") friendlyTag = "a- = on (處在...狀態)";
+      else if (wordObj.tag === "int") friendlyTag = "a- = 加強語氣";
+      else if (wordObj.tag === "ad") friendlyTag = "a- = ad- (朝向/去做...)";
+
+      document.getElementById('card-front-tag').innerText = friendlyTag;
+      document.getElementById('card-word').innerText = wordObj.word;
+      document.getElementById('card-ipa').innerText = wordObj.ipa;
+      document.getElementById('card-pos').innerText = `[ ${wordObj.pos} ]`;
+
+      // Back
+      document.getElementById('card-back-formula').innerText = wordObj.formula;
+      document.getElementById('card-translation').innerText = wordObj.translation;
+      document.getElementById('card-example').innerText = wordObj.example;
+      document.getElementById('card-example-cn').innerText = wordObj.exampleCn;
+
+      // Card Progress Tracker
+      document.getElementById('card-progress-text').innerText = `進度：${currentIndex + 1} / ${prefixDatabase.length}`;
+
+      updateMasterButtonState();
+
+      if (document.getElementById('auto-speak').checked) {
+        setTimeout(() => {
+          speakWord(wordObj.word);
+        }, 300);
+      }
+    }
+
+    function flipCard() {
+      isFlipped = !isFlipped;
+      document.getElementById('card-inner').classList.toggle('rotate-y-180', isFlipped);
+    }
+
+    function nextCard() {
+      if (currentIndex < prefixDatabase.length - 1) currentIndex++;
+      else currentIndex = 0;
+      renderFlashcard();
+    }
+
+    function prevCard() {
+      if (currentIndex > 0) currentIndex--;
+      else currentIndex = prefixDatabase.length - 1;
+      renderFlashcard();
+    }
+
+    // LEARNING MANAGEMENT
+    function toggleMasterCurrent() {
+      const currentWord = prefixDatabase[currentIndex].word;
+      if (masteredList.includes(currentWord)) {
+        masteredList = masteredList.filter(w => w !== currentWord);
+      } else {
+        masteredList.push(currentWord);
+      }
+      localStorage.setItem('prefixMasteredWords', JSON.stringify(masteredList));
+      updateMasterButtonState();
+      updateFooterStats();
+    }
+
+    function updateMasterButtonState() {
+      const currentWord = prefixDatabase[currentIndex].word;
+      const isMastered = masteredList.includes(currentWord);
+      const masterBtn = document.getElementById('master-btn');
+      
+      if (isMastered) {
+        masterBtn.className = "px-4 py-2 border border-emerald-600 bg-emerald-50 text-emerald-700 text-xs font-semibold flex items-center space-x-1.5 transition rounded-full";
+        document.getElementById('master-icon').innerText = "✔️";
+        document.getElementById('master-text').innerText = "已熟練此單字";
+      } else {
+        masterBtn.className = "px-4 py-2 border border-slate-300 bg-white text-slate-600 hover:bg-slate-50 text-xs font-semibold flex items-center space-x-1.5 transition rounded-full";
+        document.getElementById('master-icon').innerText = "⚪";
+        document.getElementById('master-text').innerText = "標記為已學會";
+      }
+    }
+
+    function updateFooterStats() {
+      const total = prefixDatabase.length;
+      const count = masteredList.length;
+      document.getElementById('footer-mastered-count').innerText = count;
+
+      const allFilter = document.getElementById('list-filter-all');
+      if (allFilter) allFilter.innerText = `全部 (${total})`;
+    }
+
+    // SPEECH AUDIO CONTROL
+    function speakWord(text) {
+      if (!synth) return;
+      synth.cancel();
+
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'en-US';
+      utterance.rate = parseFloat(voiceRateInput.value) || 0.9;
+      utterance.pitch = parseFloat(voicePitchInput.value) || 1.0;
+
+      const voices = synth.getVoices();
+      const usVoice = voices.find(v => v.lang.includes('en') && (v.name.includes('Google') || v.name.includes('Natural')));
+      if (usVoice) utterance.voice = usVoice;
+
+      synth.speak(utterance);
+    }
+
+    function speakCurrentWord(event) {
+      if (event) event.stopPropagation();
+      speakWord(prefixDatabase[currentIndex].word);
+    }
+
+    function speakCurrentWordDirect() {
+      speakWord(prefixDatabase[currentIndex].word);
+    }
+
+    function speakCurrentSentence(event) {
+      if (event) event.stopPropagation();
+      speakWord(prefixDatabase[currentIndex].example);
+    }
+
+    function toggleVoiceModal() {
+      document.getElementById('voice-modal').classList.toggle('hidden');
+    }
+
+    // ================= TAB 2: WORD LIST VIEW =================
+    function setListFilter(filterType) {
+      currentListFilter = filterType;
+      
+      const filterIds = ['all', 'of', 'on', 'int', 'ad'];
+      filterIds.forEach(id => {
+        const btn = document.getElementById(`list-filter-${id}`);
+        if (id === filterType) {
+          btn.className = "flex-shrink-0 px-3 py-1.5 bg-emerald-600 text-white rounded-full";
+        } else {
+          btn.className = "flex-shrink-0 px-3 py-1.5 bg-slate-100 text-slate-600 rounded-full";
+        }
+      });
+
+      renderWordList();
+    }
+
+    function renderWordList() {
+      const container = document.getElementById('words-container-list');
+      const query = document.getElementById('search-input').value.toLowerCase().trim();
+      container.innerHTML = '';
+
+      let filtered = prefixDatabase.filter(item => {
+        const matchesQuery = item.word.toLowerCase().includes(query) || 
+                             item.translation.includes(query) || 
+                             item.formula.includes(query);
+        
+        if (currentListFilter === 'all') return matchesQuery;
+        return matchesQuery && item.tag === currentListFilter;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<p class="text-center py-8 text-slate-400 text-sm">無符合結果 🔍</p>`;
+        return;
+      }
+
+      filtered.forEach(item => {
+        const isMastered = masteredList.includes(item.word);
+        const cardItem = document.createElement('div');
+        cardItem.className = "p-3.5 bg-white border border-slate-100 rounded-xl shadow-sm hover:shadow transition flex justify-between items-start space-x-3";
+        
+        cardItem.innerHTML = `
+          <div class="flex-1 space-y-1">
+            <div class="flex items-center space-x-1.5">
+              <span class="text-base font-bold text-slate-800">${item.word}</span>
+              <span class="text-[9px] bg-slate-100 text-slate-500 font-mono px-1 py-0.5 rounded">${item.ipa}</span>
+              <span class="text-[9px] bg-emerald-50 text-emerald-700 px-1 py-0.5 rounded font-semibold">${item.pos}</span>
+              ${isMastered ? '<span class="text-xs text-green-500">✔️</span>' : ''}
+            </div>
+            <p class="text-sm font-semibold text-slate-700">${item.translation}</p>
+            <p class="text-[10px] text-emerald-600 bg-emerald-50/50 inline-block px-1.5 py-0.5 rounded font-mono">${item.formula}</p>
+            <div class="text-[11px] text-slate-400 pt-1 border-t border-slate-50 mt-1 italic">
+              Example: ${item.example}
+            </div>
+          </div>
+          <button onclick="speakWord('${item.word}')" class="p-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 rounded-full transition self-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M17.914 6.086a9 9 0 010 12.728M12 18.75V5.25L7.75 9H4.5A1.5 1.5 0 003 10.5v3a1.5 1.5 0 001.5 1.5h3.25L12 18.75z" />
+            </svg>
+          </button>
+        `;
+        container.appendChild(cardItem);
+      });
+    }
+
+    function filterList() {
+      renderWordList();
+    }
+
+    // ================= TAB 3: QUIZ SYSTEM =================
+    function startNewQuiz() {
+      // Pick 10 random
+      const shuffled = [...prefixDatabase].sort(() => 0.5 - Math.random());
+      quizQuestions = shuffled.slice(0, 10);
+      currentQuizIndex = 0;
+      quizScore = 0;
+      showQuizQuestion();
+    }
+
+    function showQuizQuestion() {
+      selectedQuizAnswer = null;
+      document.getElementById('quiz-action-btn').classList.add('hidden');
+
+      const questionData = quizQuestions[currentQuizIndex];
+
+      document.getElementById('quiz-progress-text').innerText = `題數：${currentQuizIndex + 1} / 10`;
+      const currentPercent = Math.round((quizScore / 10) * 100);
+      document.getElementById('quiz-score-text').innerText = `得分：${currentPercent}%`;
+
+      document.getElementById('quiz-question-word').innerText = questionData.word;
+      document.getElementById('quiz-question-ipa').innerText = questionData.ipa;
+      document.getElementById('quiz-question-hint').innerText = `拆解構詞：${questionData.formula}`;
+
+      // Pick 3 wrong ones
+      let incorrectOptions = prefixDatabase
+        .filter(w => w.word !== questionData.word)
+        .sort(() => 0.5 - Math.random())
+        .slice(0, 3)
+        .map(w => w.translation);
+
+      let allOptions = [questionData.translation, ...incorrectOptions].sort(() => 0.5 - Math.random());
+
+      const container = document.getElementById('quiz-options-container');
+      container.innerHTML = '';
+
+      allOptions.forEach(option => {
+        const optionBtn = document.createElement('button');
+        optionBtn.className = "w-full text-left p-3.5 border border-slate-200 rounded-xl hover:bg-slate-50 transition flex items-center justify-between text-sm";
+        optionBtn.onclick = () => selectQuizOption(optionBtn, option, questionData.translation);
+        
+        optionBtn.innerHTML = `
+          <span class="font-medium text-slate-700">${option}</span>
+          <span class="text-slate-300">➜</span>
+        `;
+        container.appendChild(optionBtn);
+      });
+
+      speakWord(questionData.word);
+    }
+
+    function selectQuizOption(buttonElement, chosenText, correctText) {
+      if (selectedQuizAnswer !== null) return;
+      selectedQuizAnswer = chosenText;
+
+      const isCorrect = chosenText === correctText;
+      if (isCorrect) {
+        quizScore++;
+        buttonElement.className = "w-full text-left p-3.5 border-2 border-emerald-500 bg-emerald-50 text-emerald-800 rounded-xl transition flex items-center justify-between text-sm font-semibold";
+        buttonElement.innerHTML += `<span class="text-emerald-600">✔️ 正確</span>`;
+      } else {
+        buttonElement.className = "w-full text-left p-3.5 border-2 border-red-500 bg-red-50 text-red-800 rounded-xl transition flex items-center justify-between text-sm font-semibold";
+        buttonElement.innerHTML += `<span class="text-red-600">❌ 錯誤</span>`;
+
+        // Reveal Correct Option
+        const buttons = document.getElementById('quiz-options-container').querySelectorAll('button');
+        buttons.forEach(btn => {
+          if (btn.innerText.includes(correctText)) {
+            btn.className = "w-full text-left p-3.5 border-2 border-emerald-500 bg-emerald-50 text-emerald-800 rounded-xl transition flex items-center justify-between text-sm font-semibold";
+          }
+        });
+      }
+
+      const currentPercent = Math.round((quizScore / 10) * 100);
+      document.getElementById('quiz-score-text').innerText = `得分：${currentPercent}%`;
+
+      const actionBtn = document.getElementById('quiz-action-btn');
+      actionBtn.classList.remove('hidden');
+      if (currentQuizIndex === 9) {
+        actionBtn.innerText = "完成測驗，看成績";
+      } else {
+        actionBtn.innerText = "下一題 ➜";
+      }
+    }
+
+    function nextQuizQuestion() {
+      if (currentQuizIndex < 9) {
+        currentQuizIndex++;
+        showQuizQuestion();
+      } else {
+        const container = document.getElementById('quiz-options-container');
+        const percentage = Math.round((quizScore / 10) * 100);
+        
+        document.getElementById('quiz-question-word').innerText = "測驗完成！🎖️";
+        document.getElementById('quiz-question-ipa').innerText = "";
+        document.getElementById('quiz-question-hint').innerText = "";
+
+        let feedback = "繼續努力，你離字根大師不遠了！";
+        if (percentage >= 90) feedback = "完美無瑕！你對字首 a- 的掌控已經出神入化！";
+        else if (percentage >= 70) feedback = "幹得好！這些常用字首已經印在你的腦海中了。";
+
+        container.innerHTML = `
+          <div class="text-center py-6 space-y-4">
+            <p class="text-lg text-slate-600">${feedback}</p>
+            <div class="inline-block px-8 py-4 bg-emerald-50 border border-emerald-100 rounded-2xl text-center">
+              <span class="text-xs text-emerald-500 font-bold uppercase">答對題數</span>
+              <h4 class="text-4xl font-black text-emerald-700">${quizScore} / 10</h4>
+              <p class="text-xs text-emerald-400 mt-1">精確率：${percentage}%</p>
+            </div>
+            
+            <button onclick="startNewQuiz()" class="w-full mt-4 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow transition active:scale-95 text-center">
+              再戰一次
+            </button>
+          </div>
+        `;
+        document.getElementById('quiz-action-btn').classList.add('hidden');
+      }
+    }
+  </script>
+</body>
+</html>
